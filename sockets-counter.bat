@@ -39,3 +39,18 @@ For /f %%j in ('Find "TCP" /c ^< %_File%') Do Set /a _Lines=%%j
 
 Echo %date% %time% Number of connections: %_Lines% 
 del %_File%
+
+
+@ECHO OFF
+for /f "tokens=1-3 delims=:" %%i in ('netsh int ipv4 show dynamicport tcp') do (
+	if "%%i"=="Start Port      " set /a STARTIPADDR=%%j
+	if "%%i"=="Number of Ports " set /a NUMBERIPADDR=%%j
+)
+rem echo %STARTIPADDR%
+rem echo %NUMBERIPADDR%
+
+set /a "c=(%STARTIPADDR%-%NUMBERIPADDR%) /120"
+echo Maximum sockets per sec %c%
+
+set /a "used=%c%-%_Lines%"
+echo Free sockets: %used%
